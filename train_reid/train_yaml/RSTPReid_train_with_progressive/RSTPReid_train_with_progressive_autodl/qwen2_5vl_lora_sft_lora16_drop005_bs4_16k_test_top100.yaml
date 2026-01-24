@@ -16,13 +16,13 @@ lora_dropout: 0.05
 dataset: mllm_reid_img2img_one2one_5k_new_autodl, mllm_reid_img2img_one2many_5k_new_autodl, mllm_reid_txt2img_one2one_2k_new_autodl, mllm_reid_txt2img_many2one_2k_new_autodl, mllm_reid_txt2img_one2many_2k_new_autodl
 template: qwen2_vl
 cutoff_len: 2048
-max_samples: 1000
+# max_samples: 1000
 overwrite_cache: true
 preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: /root/autodl-tmp/saves/qwen2_5vl-7b/lora/sft_retpreid/lora64_with_progressive_16k_drop005_bs1_max_samples_1k_autodl_stage2_init
+output_dir: /root/autodl-tmp/saves/qwen2_5vl-7b/lora/sft_retpreid/lora64_with_progressive_16k_drop005_bs1_max_samples_1k_autodl
 logging_steps: 10
 save_steps: 500
 plot_loss: true
