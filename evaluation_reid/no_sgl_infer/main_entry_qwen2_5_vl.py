@@ -14,9 +14,15 @@ IMAGE_PATH = "/home/wangrui/code/MLLM4Text-ReID-main/data/RSTPReid/imgs"
 # only 微调了2k rstpreid 的 mllm_reid_txt2img_one2many_2k_new_dpo_min 数据集，评估查看效果
 # MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_2k_new_dpo'
 # 微调了2k rstpreid 的 mllm_reid_txt2img_one2many_2k_new_qlora_max_samples_1k 数据集中的1k条，没有dpo，但是有qlora，评估查看效果
-MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_2k_new_qlora_max_samples_1k'
-# CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_50_shuffle.json"
-CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_10_shuffle.json"
+# MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_2k_new_qlora_max_samples_1k'
+# 微调了16k rstpreid 的 mllm_reid_txt2img_one2many_16k_new_max_samples_1k 数据集中的1k条，没有dpo，也没有qlora，评估查看效果
+# MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_max_samples_1k'
+# 微调了16k rstpreid 的 mllm_reid_txt2img_one2many_16k_new_max_samples_1k 数据集中的1k条，没有dpo，也没有qlora，作为使用stage1的初始化模型，评估查看效果
+# MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_max_samples_1k_stage2_init'
+# 微调了16k rstpreid 的 mllm_reid_txt2img_one2many_16k_full 全量数据集，评估查看效果
+MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_full'
+CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_50_shuffle.json"
+# CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_10_shuffle.json"
 
 
 def main():
