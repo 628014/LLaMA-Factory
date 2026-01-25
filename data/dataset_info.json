@@ -1026,5 +1026,33 @@
       "prompt": "content"
     },
     "folder": "python"
+  },
+  "ICFG-PEDES_instruct_formatted_train_and_test_all": {
+    "file_name": "ICFG-PEDES_instruct_formatted_train_and_test_all.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "CUHK-PEDES_instruct_formatted_train_and_test_all": {
+    "file_name": "CUHK-PEDES_instruct_formatted_train_and_test_all.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
   }
 }
