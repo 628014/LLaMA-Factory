@@ -1069,7 +1069,21 @@
       "assistant_tag": "assistant"
     }
   },
-    "mllm_reid_icfg_16k_unified_autodl.json": {
+   "mllm_reid_cuhk_22k_unified_autodl": {
+    "file_name": "mllm_reid_cuhk_22k_unified_autodl.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+    "mllm_reid_icfg_16k_unified_autodl": {
     "file_name": "mllm_reid_icfg_16k_unified_autodl.json",
     "formatting": "sharegpt",
     "columns": {
@@ -1083,7 +1097,21 @@
       "assistant_tag": "assistant"
     }
   },
-    "mllm_reid_rstp_16k_unified_autodl.json": {
+  "mllm_reid_icfg_22k_unified_autodl": {
+    "file_name": "mllm_reid_icfg_22k_unified_autodl.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+    "mllm_reid_rstp_16k_unified_autodl": {
     "file_name": "mllm_reid_rstp_16k_unified_autodl.json",
     "formatting": "sharegpt",
     "columns": {
@@ -1095,6 +1123,31 @@
       "content_tag": "content",
       "user_tag": "user",
       "assistant_tag": "assistant"
+    }
+  },
+  "mllm_reid_rstp_22k_unified_autodl": {
+    "file_name": "mllm_reid_rstp_22k_unified_autodl.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "images": "images"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+    "mllm_reid_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_autodl": {
+    "file_name": "mllm_reid_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_autodl.json",
+    "ranking": true,
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "images": "images"
     }
   }
 }

@@ -1,0 +1,13 @@
+### Note: DO NOT use quantized model or quantization_bit when merging lora adapters
+
+### model
+model_name_or_path: /root/autodl-tmp/output/merge_lora/lora128_with_progressive_48k_full_autodl
+adapter_name_or_path: /root/autodl-tmp/output/home/wangrui/code/LLaMA-Factory/output/lora128_with_progressive_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_autodl/checkpoint-750
+template: qwen2_vl
+trust_remote_code: true
+
+### export
+export_dir: /root/autodl-tmp/output/merge_lora/lora128_with_progressive_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_after_4k8_autodl
+export_size: 5
+export_device: auto  # choices: [cpu, auto]
+export_legacy_format: false

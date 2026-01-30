@@ -25,6 +25,7 @@ def run_iterative_eval(model, processor, test_data, image_root, cache_file, num_
     for entry in test_data:
         # 确保 id 转为字符串，保证匹配一致性
         pid_str = str(entry["id"])
+        # if "file_path" in entry:
         path_to_pid_map[entry["file_path"]] = pid_str
 
     # 初始化日志

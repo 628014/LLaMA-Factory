@@ -1,0 +1,62 @@
+### model
+model_name_or_path: /root/autodl-tmp/output/merge_lora/lora128_with_progressive_48k_full_autodl
+image_max_pixels: 112896  
+video_max_pixels: 16384
+trust_remote_code: true
+# 【显存优化】4090 跑 4096 长度必须开 4bit 量化
+quantization_bit: 4
+quantization_method: bitsandbytes
+### method
+stage: dpo
+do_train: true
+finetuning_type: lora
+# 【提点技巧 1】ReID 需要记忆细节，64 rank 可能略低，提升到 128 能捕获更多细微特征
+lora_rank: 16
+# 【提点技巧 1】Alpha 通常设为 Rank 的 2 倍，增强 LoRA 的更新权重
+lora_alpha: 32
+lora_target: q_proj,v_proj
+lora_dropout: 0.05
+pref_beta: 0.3
+pref_loss: sigmoid
+
+### dataset
+dataset: mllm_reid_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_autodl
+template: qwen2_vl
+# 【关键修复】容纳 10 张图 + 对话
+cutoff_len: 4096
+
+overwrite_cache: true
+preprocessing_num_workers: 8
+dataloader_num_workers: 2
+
+### output
+output_dir: /root/autodl-tmp/output/home/wangrui/code/LLaMA-Factory/output/lora128_with_progressive_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_autodl
+logging_steps: 10
+save_steps: 1000
+plot_loss: true
+overwrite_output_dir: true
+save_only_model: false
+report_to: none
+
+### train
+# 【显存优化】必须为 1
+per_device_train_batch_size: 1
+# 【梯度质量】因为 batch=1，必须累计梯度。1*16 = 等效 Batch 16，更稳定
+gradient_accumulation_steps: 16
+learning_rate: 1.0e-5
+num_train_epochs: 2.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
+# 【显存优化】必须开启，以时间换空间
+resume_from_checkpoint: null
+optim: paged_adamw_32bit
+gradient_checkpointing: true
+flash_attn: fa2
+deepspeed: ds_z2_config.json
+
+### eval
+# 建议关闭边训边测以节省显存，训练完再单独测
+# val_size: 0.1
+# eval_strategy: no

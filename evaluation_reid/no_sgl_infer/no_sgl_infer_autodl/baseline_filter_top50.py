@@ -89,7 +89,7 @@ def extract_features_parallel(unique_file_paths, image_root):
                     
     return feat_dict
 
-def baseline_filter_50(test_samples, image_root, save_path, gallery_size=50):
+def baseline_filter_50(test_samples, image_root, save_path, gallery_size=30):
     # --- 1. 数据准备 ---
     # 获取所有涉及到的图片路径（用于构建 Gallery 库）
     unique_file_paths = list(set([s["file_path"] for s in test_samples]))

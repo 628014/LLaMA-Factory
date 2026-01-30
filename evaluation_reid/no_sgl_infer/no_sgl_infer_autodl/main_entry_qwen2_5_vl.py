@@ -35,18 +35,35 @@ IMAGE_PATH_ICFG = "/root/autodl-tmp/MLLM4Text-ReID-main/data/ICFG-PEDES/ICFG-PED
 
 CACHE_FILE_ICFG_50 = "/root/autodl-tmp/output/reid_resnet50_cache/icfg_test_gallery_50_shuffle.json"
 CACHE_FILE_ICFG_10 = "/root/autodl-tmp/output/reid_resnet50_cache/icfg_test_gallery_10_shuffle.json"
-
+CACHE_FILE_ICFG_30 = "/root/autodl-tmp/output/reid_resnet50_cache/icfg_test_gallery_30_shuffle.json"
+# 上面正样本太多了 
+CACHE_FILE_ICFG_80 = "/root/autodl-tmp/output/reid_resnet50_cache/icfg_test_gallery_80_shuffle.json"
 # 2. CUHK-PEDES 配置
 CAPTION_PATH_CUHK = "/root/autodl-tmp/MLLM4Text-ReID-main/data/CUHK-PEDES/CUHK-PEDES/reid_raw_match_score_40201.json"
 IMAGE_PATH_CUHK = "/root/autodl-tmp/MLLM4Text-ReID-main/data/CUHK-PEDES/CUHK-PEDES/imgs/"
 
 CACHE_FILE_CUHK_50 = "/root/autodl-tmp/output/reid_resnet50_cache/cuhk_test_gallery_50_shuffle.json"
 CACHE_FILE_CUHK_10 = "/root/autodl-tmp/output/reid_resnet50_cache/cuhk_test_gallery_10_shuffle.json"
+CACHE_FILE_CUHK_30 = "/root/autodl-tmp/output/reid_resnet50_cache/cuhk_test_gallery_30_shuffle.json"
+
+# 3. 选择模型路径进行评估
+
+# 2. CUHK-PEDES 配置
+CAPTION_PATH_RSTP = "/root/autodl-tmp/MLLM4Text-ReID-main/data/RSTPReid/data_caption_all_qwen.json"
+IMAGE_PATH_RSTP = "/root/autodl-tmp/MLLM4Text-ReID-main/data/RSTPReid/imgs/"
+
+CACHE_FILE_RSTP_50 = "/root/autodl-tmp/output/reid_resnet50_cache/rstp_test_gallery_50_shuffle.json"
+CACHE_FILE_RSTP_10 = "/root/autodl-tmp/output/reid_resnet50_cache/rstp_test_gallery_10_shuffle.json"
+CACHE_FILE_RSTP_30 = "/root/autodl-tmp/output/reid_resnet50_cache/rstp_test_gallery_30_shuffle.json"
 
 # 模型路径
-MODEL_PATH = '/root/autodl-tmp/output/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_full'
+# MODEL_PATH = '/root/autodl-tmp/output/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_full'
+# 48k 全量数据微调的模型路径 
+# MODEL_PATH = '/root/autodl-tmp/output/merge_lora/lora128_with_progressive_48k_full_autodl'
+# 48k 全量数据微调的模型路径 + 最后微调了15k cuhk rstp icfg 的混合DPO 数据集，
+MODEL_PATH = '/root/autodl-tmp/output/merge_lora/lora128_with_progressive_t2i_icfg_cuhk_rstp_15k_dpo_mixed_least_min_after_4k8_autodl'
 
-def generate_cache_for_dataset(dataset_name, caption_path, img_root, cache_path_50, cache_path_10):
+def generate_cache_for_dataset(dataset_name, caption_path, img_root, cache_path_50, cache_path_10, cache_path_30):
     print(f"\n{'='*10} Processing {dataset_name} {'='*10}")
     
     if not os.path.exists(caption_path):
@@ -77,6 +94,13 @@ def generate_cache_for_dataset(dataset_name, caption_path, img_root, cache_path_
         baseline_filter_50(test_data, img_root, cache_path_10, gallery_size=10)
     else:
         print(f">>> [Top-10] Cache exists: {cache_path_10}")
+    
+    # 生成 Top-30
+    if not os.path.exists(cache_path_30):
+        print(f">>> [Top-30] Cache missing. Generating...")
+        baseline_filter_50(test_data, img_root, cache_path_30, gallery_size=30)
+    else:
+        print(f">>> [Top-30] Cache exists: {cache_path_30}")
 
 def main():
     # # 1. 处理 ICFG
@@ -85,7 +109,8 @@ def main():
     #     CAPTION_PATH_ICFG,
     #     IMAGE_PATH_ICFG,
     #     CACHE_FILE_ICFG_50,
-    #     CACHE_FILE_ICFG_10
+    #     CACHE_FILE_ICFG_10,
+    #     CACHE_FILE_ICFG_80
     # )
 
     # # 2. 处理 CUHK
@@ -94,7 +119,8 @@ def main():
     #     CAPTION_PATH_CUHK,
     #     IMAGE_PATH_CUHK,
     #     CACHE_FILE_CUHK_50,
-    #     CACHE_FILE_CUHK_10
+    #     CACHE_FILE_CUHK_10,
+    #     CACHE_FILE_CUHK_30
     # )
     
     print("\n>>> All tasks finished.")
@@ -105,7 +131,7 @@ def main():
     # 如果您准备好运行评估，请取消以下注释，并选择您要评估的数据集和缓存文件
 
     # icfg 
-    # pass icfg 中一个测试图一个id 有17 - 19张图 
+    # pass icfg 中一个测试图一个id 有17 - 19张图  太多了，和论文的差太多了
     # target_data = load_pstp_test(CAPTION_PATH_ICFG)
     # target_img_root = IMAGE_PATH_ICFG
     # target_cache = CACHE_FILE_ICFG_10
@@ -115,14 +141,32 @@ def main():
     # target_img_root = IMAGE_PATH_ICFG
     # target_cache = CACHE_FILE_ICFG_50
 
+
+    target_data = load_pstp_test(CAPTION_PATH_ICFG)
+    target_img_root = IMAGE_PATH_ICFG
+    target_cache = CACHE_FILE_ICFG_80
+
     # cuhk 
     # target_data = load_pstp_test(CAPTION_PATH_CUHK)
     # target_img_root = IMAGE_PATH_CUHK
     # target_cache = CACHE_FILE_CUHK_10
 
-    target_data = load_pstp_test(CAPTION_PATH_CUHK)
-    target_img_root = IMAGE_PATH_CUHK
-    target_cache = CACHE_FILE_CUHK_50
+    # target_data = load_pstp_test(CAPTION_PATH_CUHK)
+    # target_img_root = IMAGE_PATH_CUHK
+    # target_cache = CACHE_FILE_CUHK_50
+
+    # rstp
+    # target_data = load_pstp_test(CAPTION_PATH_RSTP)
+    # target_img_root = IMAGE_PATH_RSTP
+    # target_cache = CACHE_FILE_RSTP_10
+
+    # target_data = load_pstp_test(CAPTION_PATH_RSTP)
+    # target_img_root = IMAGE_PATH_RSTP
+    # target_cache = CACHE_FILE_RSTP_30
+
+    # target_data = load_pstp_test(CAPTION_PATH_RSTP)
+    # target_img_root = IMAGE_PATH_RSTP
+    # target_cache = CACHE_FILE_RSTP_50
 
     print(f"\n>>> Loading Model from {MODEL_PATH}...")
     try:

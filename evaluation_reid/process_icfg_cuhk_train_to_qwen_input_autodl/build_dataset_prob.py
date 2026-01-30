@@ -351,7 +351,7 @@ def build_dataset_for_source(source_name, caption_path, image_root, output_json,
     all_samples.extend(task4)
     
     print("Building Task 5: Txt2Img One2Many (2k)...")
-    task5 = build_txt2img_o2m(data, image_root, num_samples=2000, gallery_size_range=(3, 6))
+    task5 = build_txt2img_o2m(data, image_root, num_samples=8000, gallery_size_range=(3, 6))
     all_samples.extend(task5)
     
     # 3. 乱序并保存
@@ -368,17 +368,17 @@ if __name__ == "__main__":
     # 1. RSTPReid 配置
     CAPTION_PATH_RSTP = "/root/autodl-tmp/MLLM4Text-ReID-main/data/RSTPReid/data_caption_all_qwen.json"
     IMAGE_PATH_RSTP = "/root/autodl-tmp/MLLM4Text-ReID-main/data/RSTPReid/imgs"
-    OUTPUT_RSTP = "/root/autodl-tmp/LLaMA-Factory/data/mllm_reid_rstp_16k_unified_autodl.json"
+    OUTPUT_RSTP = "/root/home/wangrui/code/LLaMA-Factory/data/mllm_reid_rstp_22k_unified_autodl.json"
 
     # 2. ICFG-PEDES 配置
     CAPTION_PATH_ICFG = "/root/autodl-tmp/MLLM4Text-ReID-main/data/ICFG-PEDES/ICFG-PEDES/ICFG-PEDES_match_score_54522.json"
     IMAGE_PATH_ICFG = "/root/autodl-tmp/MLLM4Text-ReID-main/data/ICFG-PEDES/ICFG-PEDES/imgs"
-    OUTPUT_ICFG = "/root/autodl-tmp/LLaMA-Factory/data/mllm_reid_icfg_16k_unified_autodl.json"
+    OUTPUT_ICFG = "/root/home/wangrui/code/LLaMA-Factory/data/mllm_reid_icfg_22k_unified_autodl.json"
 
     # 3. CUHK-PEDES 配置
     CAPTION_PATH_CUHK = "/root/autodl-tmp/MLLM4Text-ReID-main/data/CUHK-PEDES/CUHK-PEDES/reid_raw_match_score_40201.json"
     IMAGE_PATH_CUHK = "/root/autodl-tmp/MLLM4Text-ReID-main/data/CUHK-PEDES/CUHK-PEDES/imgs/"
-    OUTPUT_CUHK = "/root/autodl-tmp/LLaMA-Factory/data/mllm_reid_cuhk_16k_unified_autodl.json"
+    OUTPUT_CUHK = "/root/home/wangrui/code/LLaMA-Factory/data/mllm_reid_cuhk_22k_unified_autodl.json"
 
     # === 执行生成 ===
     

@@ -1,0 +1,13 @@
+### Note: DO NOT use quantized model or quantization_bit when merging lora adapters
+
+### model
+model_name_or_path: /root/autodl-tmp/model/models/Qwen/Qwen2.5-VL-7B-Instruct
+adapter_name_or_path: /root/autodl-tmp/saves/train/saves/qwen2_5vl-7b/lora/sft_retpreid/lora128_with_progressive_48k_full_autodl/checkpoint-9000
+template: qwen2_vl
+trust_remote_code: true
+
+### export
+export_dir: /root/autodl-tmp/output/merge_lora/lora128_with_progressive_48k_full_autodl
+export_size: 5
+export_device: auto  # choices: [cpu, auto]
+export_legacy_format: false
