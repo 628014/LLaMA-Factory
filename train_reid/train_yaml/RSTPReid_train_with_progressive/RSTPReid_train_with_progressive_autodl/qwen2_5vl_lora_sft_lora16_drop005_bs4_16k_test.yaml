@@ -1,48 +1,58 @@
 ### model
-model_name_or_path: /root/autodl-tmp/model/models/Qwen/Qwen2.5-VL-7B-Instruct
-image_max_pixels: 262144
-video_max_pixels: 16384
+model_name_or_path: /root/autodl-tmp/model/models/Qwen/Qwen2.5-VL-3B-Instruct
 trust_remote_code: true
+# 【显存优化】4090 跑 4096 长度必须开 4bit 量化
+quantization_bit: 4
+# 【精度权衡】ReID 不需要极高像素，但不能太低。128000 ≈ 360x360，对 ReID 足够，且省显存
+image_max_pixels: 128000
 
 ### method
 stage: sft
 do_train: true
 finetuning_type: lora
-lora_rank: 64
+# 【提点技巧 1】ReID 需要记忆细节，64 rank 可能略低，提升到 128 能捕获更多细微特征
+lora_rank: 128
+# 【提点技巧 1】Alpha 通常设为 Rank 的 2 倍，增强 LoRA 的更新权重
+lora_alpha: 256
 lora_target: all
 lora_dropout: 0.05
+# 【提点技巧 2】开启 NEFTune 噪声，显著提升指令微调的泛化能力，防止死记硬背
+# neftune_noise_alpha: 5
 
 ### dataset
 dataset: mllm_reid_img2img_one2one_5k_new_autodl, mllm_reid_img2img_one2many_5k_new_autodl, mllm_reid_txt2img_one2one_2k_new_autodl, mllm_reid_txt2img_many2one_2k_new_autodl, mllm_reid_txt2img_one2many_2k_new_autodl
 template: qwen2_vl
-cutoff_len: 2048
-# max_samples: 1000
+# 【关键修复】容纳 10 张图 + 对话
+cutoff_len: 4096
 overwrite_cache: true
 preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: /root/autodl-tmp/saves/qwen2_5vl-7b/lora/sft_retpreid/lora64_with_progressive_16k_drop005_bs1_autodl
-logging_steps: 10
-save_steps: 500
+output_dir: /root/autodl-tmp/saves/qwen2_5vl-7b/lora/sft_retpreid/lora64_with_progressive_16k_drop005_bs1_3B_autodl
+save_steps: 1000
 plot_loss: true
 overwrite_output_dir: true
 save_only_model: false
-report_to: none  # choices: [none, wandb, tensorboard, swanlab, mlflow]
+report_to: none
 
 ### train
+# 【显存优化】必须为 1
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 8
+# 【梯度质量】因为 batch=1，必须累计梯度。1*16 = 等效 Batch 16，更稳定
+gradient_accumulation_steps: 16
 learning_rate: 1.0e-4
 num_train_epochs: 3.0
 lr_scheduler_type: cosine
-warmup_ratio: 0.1
+warmup_ratio: 0.05
 bf16: true
 ddp_timeout: 180000000
-resume_from_checkpoint: null
+# 【显存优化】必须开启，以时间换空间
+gradient_checkpointing: true
+# 【显存优化】使用 Paged AdamW 优化器，在显存紧张时会将优化器状态转移到内存，防止 OOM
+optim: paged_adamw_32bit
 
 ### eval
+# 建议关闭边训边测以节省显存，训练完再单独测
 # val_size: 0.1
-# per_device_eval_batch_size: 1
-# eval_strategy: steps
-# eval_steps: 500
+# eval_strategy: no

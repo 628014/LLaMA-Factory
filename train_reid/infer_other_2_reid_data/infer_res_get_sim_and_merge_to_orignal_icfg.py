@@ -201,26 +201,26 @@ def main():
     with open(OUTPUT_FULL, 'r', encoding='utf-8') as f:
         merged_data = json.load(f)
 
-    # # 步骤 2: 计算相似度
-    # try:
-    #     # 根据显存大小调整 batch_size
-    #     # 4B 模型在 24G 显存上跑 batch_size=32 比较稳妥
-    #     # 如果报 OOM，请将 batch_size 调小至 16 或 8
-    #     batch_size = 32
+    # 步骤 2: 计算相似度
+    try:
+        # 根据显存大小调整 batch_size
+        # 4B 模型在 24G 显存上跑 batch_size=32 比较稳妥
+        # 如果报 OOM，请将 batch_size 调小至 16 或 8
+        batch_size = 32
         
-    #     model = load_model()
-    #     avg_score = calculate_similarity_batch(merged_data, model, batch_size=batch_size)
+        model = load_model()
+        avg_score = calculate_similarity_batch(merged_data, model, batch_size=batch_size)
         
-    #     print("\n" + "="*50)
-    #     print(f"ICFG-PEDES 处理结果统计:")
-    #     print(f"原始数据总数: {len(merged_data)}")
-    #     print(f"平均语义相似度 (Cosine Similarity): {avg_score:.6f}")
-    #     print("="*50)
+        print("\n" + "="*50)
+        print(f"ICFG-PEDES 处理结果统计:")
+        print(f"原始数据总数: {len(merged_data)}")
+        print(f"平均语义相似度 (Cosine Similarity): {avg_score:.6f}")
+        print("="*50)
         
-    # except Exception as e:
-    #     print(f"计算相似度时出错: {e}")
-    #     import traceback
-    #     traceback.print_exc()
+    except Exception as e:
+        print(f"计算相似度时出错: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == "__main__":
     main()
