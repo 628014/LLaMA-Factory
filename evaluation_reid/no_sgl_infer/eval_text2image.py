@@ -55,8 +55,13 @@ def run_iterative_eval(model, processor, test_data, image_root, cache_file, num_
             # 获取 Gallery
             gallery_rel_paths = gallery_data[qid]["gallery"]
             gallery_full_paths = [os.path.join(image_root, p) for p in gallery_rel_paths]
+            # 不取50条，只取前20条进行评估（加快速度） + 提升效果 
+
+            # gallery_full_paths = gallery_full_paths[:20]
             # 构造 GT (Ground Truth)
             gt = [1 if os.path.basename(p).split("_")[0] == query_pid else 0 for p in gallery_rel_paths]
+            # 对应gt也只取前20条
+            # gt = gt[:20]
 
             # 不能在这里随机打乱，这样导致每一次评估的时候不能维持唯一变量
 
@@ -75,7 +80,7 @@ def run_iterative_eval(model, processor, test_data, image_root, cache_file, num_
                 processor, 
                 caption, 
                 gallery_full_paths, 
-                max_batch_size=5,
+                max_batch_size=3,
                 log_prefix=f"R{round_idx}|PID:{query_pid}"
             )
             

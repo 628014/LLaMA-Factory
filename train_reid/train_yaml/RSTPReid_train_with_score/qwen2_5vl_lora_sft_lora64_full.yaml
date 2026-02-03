@@ -10,6 +10,7 @@ do_train: true
 finetuning_type: lora
 lora_rank: 64
 lora_target: all
+freeze_vision_tower: False
 
 ### dataset
 dataset: mllm_reid_train_18k_retpreid_score  # video: mllm_video_demo

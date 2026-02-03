@@ -21,14 +21,17 @@ IMAGE_PATH = "/home/wangrui/code/MLLM4Text-ReID-main/data/RSTPReid/imgs"
 # MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_max_samples_1k_stage2_init'
 # 微调了16k rstpreid 的 mllm_reid_txt2img_one2many_16k_full 全量数据集，评估查看效果
 MODEL_PATH = '/home/wangrui/code/LLaMA-Factory/output/qwen2_5vl_lora_sft_retpreid_mllm_reid_txt2img_one2many_16k_new_full'
-CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_50_shuffle.json"
+# CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_50_shuffle.json"
 # CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_10_shuffle.json"
+# CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_20_shuffle.json"
+CACHE_FILE = "/home/wangrui/code/LLaMA-Factory/output/reid_resnet50_cache/pstp_test_gallery_30_shuffle.json"
 
 
 def main():
     # 1. 加载数据
     print(">>> Loading Datasets...")
     test_data = load_pstp_test(CAPTION_PATH)
+    
 
     # 2. 准备 Gallery (如果不存在则生成)
     if not os.path.exists(CACHE_FILE):

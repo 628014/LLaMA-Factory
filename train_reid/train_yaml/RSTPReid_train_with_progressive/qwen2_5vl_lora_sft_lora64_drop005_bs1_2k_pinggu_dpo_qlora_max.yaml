@@ -28,7 +28,7 @@ preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: saves/qwen2_5vl-7b/lora/sft_retpreid/lora8_q_v_proj_224px_dpo_2k_pinggu
+output_dir: saves/qwen2_5vl-7b/lora/sft_retpreid/lora8_q_v_proj_224px_dpo_2k_pinggu_max
 logging_steps: 10
 save_steps: 500
 plot_loss: true

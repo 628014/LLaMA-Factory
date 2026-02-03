@@ -10,6 +10,7 @@ do_train: true
 finetuning_type: lora
 lora_rank: 64
 lora_target: all
+freeze_vision_tower: False
 
 ### dataset
 dataset: mllm_reid_train_18k_retpreid_score  # video: mllm_video_demo
@@ -21,9 +22,9 @@ preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: saves/qwen2_5vl-7b/lora/sft_retpreid_with_score_and_ccls/lora64_full
+output_dir: saves/qwen2_5vl-7b/lora/sft_retpreid_with_score_and_ccls/lora64_full_unfreeze_full
 logging_steps: 10
-save_steps: 500
+save_steps: 3000
 plot_loss: true
 overwrite_output_dir: true
 save_only_model: false
