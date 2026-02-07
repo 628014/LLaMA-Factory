@@ -1,6 +1,8 @@
 import gradio as gr
 import json
 import os
+import io
+import base64
 from PIL import Image
 import torch
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
@@ -18,11 +20,10 @@ if os.path.exists(JSONL_PATH):
             data = json.loads(line)
             # 获取绝对路径作为 key
             try:
-                img_path = data['images_path'][0]['path']
+                img_path = data['images_path'][0]
                 cache_map[img_path] = data
-            except: 
-                print("Error processing line:", data)
-            # import pdb; pdb.set_trace()
+            except Exception as e:
+                print(f"Error processing line: {e}, data: {data}")
             
             
 
@@ -44,14 +45,21 @@ def predict(image, img_path_input):
     # 优先检查路径匹配（针对 1k 测试集）
     if img_path_input and img_path_input in cache_map:
         item = cache_map[img_path_input]
-        return item['predict'], item['label'], f"{item['sim_score']:.6f}"
+        # 加载缓存中的图片
+        try:
+            cached_image = Image.open(img_path_input)
+        except Exception as e:
+            cached_image = None
+            print(f"Error loading image: {e}")
+        # 有图片时，显示右侧列
+        return cached_image, gr.update(visible=True), item['predict'], item['label'], f"{item['sim_score']:.6f}"
+
+    # 检查是否有上传图片
+    if image is None:
+        return None, gr.update(visible=False), "错误：请上传图片或输入有效的缓存路径", "N/A", "N/A"
 
     # 在线推理 (a-b 模式切换)
-    prompt_text = (
-        "###Task###\nYou are an expert in Re-Identification (ReID). "
-        "Please refer to the following requirements... (此处填入您完整的Prompt模板)"
-    )
-    
+    prompt_text = "<image>\n###Task###\nYou are an expert in the field of Re-Identification (ReID). Please refer to the following requirements to understand the general and specific features of the image, and then combine all the features to return a descriptive language, and then judge the matching score with the image based on the given language.\n###Requirement###\nChoose one color from black, white, red, purple, yellow, blue, green, pink, gray, and brown.\n1、Gender: male、female\n2、Age: teenager、young、adult、old\n3、Body Build: fat、slightly fat、thin\n4、Length Hair: long hair、medium-length hair、short hair、bald\n5、Wearing hat: yes、no; if yes, the color is: XXX\n6、Carrying backpack: yes、no; if yes, the color is:  XXX\n7、Carrying handbag or bag: yes、no; if yes, the color is:  XXX\n8、Upper Body\n8.1、Sleeve Length: long sleeve、short sleeve\n8.2、Inner Lining: yes、no; if yes, the color is:\n8.3、Color of upper-body: XXX\n9、Lower Body\n9.1、Length of lower-body: long lower-body clothing、short\n9.2、Type of lower-body: dress、pants\n9.3、Color of lower-body: XXX\n10、Shoe Color: XXX\n11、Emotion: Happy、Surprised、Sad、Angry、Disgusted、Fearful、Neutral、Other\n12、Gait and Posture: XXX\n###Output###\nThe final description of the image is XXX. In summary, the degree of relevance to the image is XXX.\n"
     messages = [
         {
             "role": "user",
@@ -75,38 +83,41 @@ def predict(image, img_path_input):
         generated_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
     )[0]
     
-    return output_text, "N/A (在线推理模式无标准标注)", "N/A"
+    # 用户上传图片时，右侧不展示图片，隐藏右侧列
+    return None, gr.update(visible=False), output_text, "N/A (在线推理模式无标准标注)", "N/A"
 
 # --- 构建 Gradio 界面 ---
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
+with gr.Blocks(theme=gr.themes.Soft(), css=".gradio-container { height: 100vh; } .column { height: 80vh; }") as demo:
     gr.Markdown("# 图 3-6: 行人细粒度属性描述生成与置信度评估系统")
     
     with gr.Row():
         # 左侧模块：图片上传与操作
-        with gr.Column(scale=1):
-            input_img = gr.Image(type="pil", label="上传图像 (Input Image)")
+        with gr.Column(scale=1, min_width=300):
+            input_img = gr.Image(type="pil", label="上传图像 (Input Image)", height="45vh")
             img_path_box = gr.Textbox(label="输入图片绝对路径 (用于匹配测试集缓存)", placeholder="/home/path/to/img.jpg")
             run_btn = gr.Button("开始推理/检索", variant="primary")
             clear_btn = gr.Button("清除内容")
             
-        # 右侧模块：预测与标准标注
-        with gr.Column(scale=2):
-            predict_out = gr.Textbox(label="预测描述与推理路径 (Predicted Result)", lines=12)
-            label_out = gr.Textbox(label="标准标注 (Ground Truth Label)", lines=6)
+        # 中间模块：预测与标准标注
+        with gr.Column(scale=2, min_width=400):
+            predict_out = gr.Textbox(label="预测描述与推理路径 (Predicted Result)", lines=20)
+            label_out = gr.Textbox(label="标准标注 (Ground Truth Label)", lines=10)
             
-    # 下方模块：相似度展示
-    with gr.Row():
-        sim_score_out = gr.Label(label="语义相似度评估说明 (Similarity Score)")
+        # 右侧模块：图片展示和相似度（可动态显示/隐藏）
+        right_column = gr.Column(scale=1, min_width=300, visible=False)
+        with right_column:
+            display_img = gr.Image(type="pil", label="当前图片", height="65vh")
+            sim_score_out = gr.Label(label="语义相似度评估说明 (Similarity Score)")
 
     run_btn.click(
         fn=predict, 
         inputs=[input_img, img_path_box], 
-        outputs=[predict_out, label_out, sim_score_out]
+        outputs=[display_img, right_column, predict_out, label_out, sim_score_out]
     )
     
     clear_btn.click(
-        fn=lambda: (None, "", "", "", None), 
-        outputs=[input_img, img_path_box, predict_out, label_out, sim_score_out]
+        fn=lambda: (None, gr.update(visible=False), None, "", "", None), 
+        outputs=[input_img, right_column, display_img, img_path_box, predict_out, label_out, sim_score_out]
     )
 
 if __name__ == "__main__":
