@@ -168,8 +168,8 @@ def predict(model_name, image_files, prompt_text):
 
 # ================= UI Layout =================
 with gr.Blocks(title="ReID VL Inference", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# ReID Vision-Language Inference App")
-    gr.Markdown("Supports fine-tuned and base models with multiple task templates.")
+    gr.Markdown("<h1 style='text-align: center; margin-bottom: 10px;'>ReID Vision-Language Inference</h1>")
+    gr.Markdown("<div style='text-align: center; color: gray;'>Supports fine-tuned and base models with multiple task templates.</div>")
     
     with gr.Row():
         with gr.Column(scale=1):
