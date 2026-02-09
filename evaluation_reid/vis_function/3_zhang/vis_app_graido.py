@@ -88,7 +88,7 @@ def predict(image, img_path_input):
 
 # --- 构建 Gradio 界面 ---
 with gr.Blocks(theme=gr.themes.Soft(), css=".gradio-container { height: 100vh; } .column { height: 80vh; }") as demo:
-    gr.Markdown("# 图 3-6: 行人细粒度属性描述生成与置信度评估系统")
+    gr.Markdown("# 行人细粒度属性描述生成与置信度评估系统")
     
     with gr.Row():
         # 左侧模块：图片上传与操作
